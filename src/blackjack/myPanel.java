@@ -39,6 +39,7 @@ public class myPanel extends JFrame {
     int[] dealer=new int[2];
     int[] player=new int[2];
     int count=0;
+    int stand=0;
 
     public static void main(String[] args) {
         myPanel mp = new myPanel();
@@ -139,15 +140,14 @@ public class myPanel extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Add")) {
-
+                if(count==0) {
                     double money = Double.parseDouble(Jtf_player_add.getText());
                     String[] account = Jl_player_account.getText().split(" ");
                     double budget = Double.parseDouble(account[1]);
-                    if (money<=0){
+                    if (money <= 0) {
                         Jta_game_record.append("\r\nInvalid input, please try again!");
                         Jl_player_bet.setText("Bet: 0 $");
-                    }
-                    else if (budget < money) {
+                    } else if (budget < money) {
                         Jta_game_record.append("\r\nNot enough money");
                         Jl_player_bet.setText("Bet: 0 $");
                     } else {
@@ -158,14 +158,15 @@ public class myPanel extends JFrame {
                     Jtf_player_add.updateUI();
                     Jl_player_bet.updateUI();
                     Jl_player_account.updateUI();
-
+                }
             }else if (e.getActionCommand().equals("Hit")){
-                if(count==1) {
+                if(count!=0) {
                     ran = new Random();
-                    int i = ran.nextInt(52);
+                    int i =1+ ran.nextInt(51);
                     JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(i)));
                     Jp_player_cards.add(picLabel);
                     Jp_player_cards.updateUI();
+                    count++;
                     cardPoints(i, "player");
                     isWin();
                 }else{
@@ -173,9 +174,8 @@ public class myPanel extends JFrame {
                 }
 
             }else if (e.getActionCommand().equals("Stand")){
-                if(count==1) {
+                if(count!=0) {
                     ran = new Random();
-                    int count = ran.nextInt(5);
                     int min=0;
                     while (min<=17) {
                         int j = 1 + ran.nextInt(51);
@@ -185,13 +185,14 @@ public class myPanel extends JFrame {
                         cardPoints(j, "dealer");
                         min = Math.min(dealer[0],dealer[1]);
                     }
+                    count++;
+                    stand=1;
                     isWin();
                 }else{
                     Jta_game_record.append("\r\nPlease press Deal to start game!");
                 }
-
             }else if (e.getActionCommand().equals("Deal")){
-                if(count==1){
+                if(count!=0){
                     Jta_game_record.append("\r\nYou can not quit the current game!");
                 }else {
                     String[] account = Jl_player_bet.getText().split(" ");
@@ -200,7 +201,7 @@ public class myPanel extends JFrame {
                         Jta_game_record.append("\r\nInvalid input, please add money and try again!");
                         Jl_player_bet.setText("Bet: 0 $");
                     }else {
-                        count = 1;
+                        count++;
                         newGame();
                     }
                 }
@@ -213,7 +214,7 @@ public class myPanel extends JFrame {
     public void newGame(){
         for(int i=0;i<2;i++) {
             ran = new Random();
-            int j=ran.nextInt(52);
+            int j=1+ran.nextInt(51);
             JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
             Jp_player_cards.add(picLabel);
             Jp_player_cards.updateUI();
@@ -224,6 +225,21 @@ public class myPanel extends JFrame {
                 picLabel = new JLabel(new ImageIcon(card.cards.get(53)));
                 Jp_dealer_cards.add(picLabel);
             }else {
+                String[] account = Jl_dealer_account.getText().split(" ");
+                double budget = Double.parseDouble(account[1]);
+                double money=0;
+                if(budget<100) {
+                    money = budget;
+                }else{
+                    money = ran.nextInt((int) budget - (int) (budget * 0.3));
+                }
+
+                Jl_dealer_bet.setText("Bet: " + money + " $");
+                Jl_dealer_account.setText("Account: "+(budget-money)+" $");
+
+                Jl_dealer_bet.updateUI();
+                Jl_dealer_account.updateUI();
+
                 j=ran.nextInt(52);
                 picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
                 Jp_dealer_cards.add(picLabel);
@@ -231,16 +247,6 @@ public class myPanel extends JFrame {
                 cardPoints(j,"dealer");
             }
         }
-
-        String[] account = Jl_dealer_account.getText().split(" ");
-        double budget = Double.parseDouble(account[1]);
-        double money = ran.nextInt((int)budget-(int)(budget*0.3));
-
-        Jl_dealer_bet.setText("Bet: " + money + " $");
-        Jl_dealer_account.setText("Account: "+(budget-money)+" $");
-
-        Jl_dealer_bet.updateUI();
-        Jl_dealer_account.updateUI();
 
         isWin();
 
@@ -278,16 +284,61 @@ public class myPanel extends JFrame {
     public void isWin(){
         Jta_game_record.append("\r\nPlayer soft hand"+player[0]+"\r\nPlayer hard hand"+player[1]);
         Jta_game_record.append("\r\nDealer current known soft hand"+dealer[0]+"\r\nDealer current known hard hand"+dealer[1]);
-        if(player[0]>21&&player[0]>21){
-            Jta_game_record.append("\r\nPlayer bust!\r\nDealer Win!");
-            cleanMoney("dealer");
-            count=0;
+        if(count==1){
+            if (player[1]==21&&dealer[1]!=21) {
+                Jta_game_record.append("\r\nplayer Win!");
+                cleanMoney("player");
+                count = 0;
 
-        }else if(dealer[0]>21&&dealer[0]>21){
-            Jta_game_record.append("\r\nDealer bust!\r\nPlayer Win!");
-            cleanMoney("player");
-            count=0;
+            } else if (player[1]!=21&&dealer[1]==21) {
+                Jta_game_record.append("\r\nDealer Win!");
+                cleanMoney("dealer");
+                count = 0;
+
+            } else if (player[1]==21&&dealer[1]==21) {
+                Jta_game_record.append("\r\nTied!");
+                cleanMoney("tie");
+                count = 0;
+            }
+        }else if(count>1&&stand!=1){
+            if (player[0] > 21 && player[1] > 21) {
+                Jta_game_record.append("\r\nPlayer bust!\r\nDealer Win!");
+                cleanMoney("dealer");
+                count = 0;
+
+            } else if (dealer[0] > 21 && dealer[1] > 21) {
+                Jta_game_record.append("\r\nDealer bust!\r\nPlayer Win!");
+                cleanMoney("player");
+                count = 0;
+            }
+
+        } else if(stand==1){
+            if (player[0] > 21 && player[1] > 21) {
+                Jta_game_record.append("\r\nPlayer bust!\r\nDealer Win!");
+                cleanMoney("dealer");
+                count = 0;
+
+            } else if (dealer[0] > 21 && dealer[1] > 21) {
+                Jta_game_record.append("\r\nDealer bust!\r\nPlayer Win!");
+                cleanMoney("player");
+                count = 0;
+            } else if (player[0] > dealer[0]) {
+                Jta_game_record.append("\r\nplayer Win!");
+                cleanMoney("player");
+                count = 0;
+
+            } else if (player[0] < dealer[0]) {
+                Jta_game_record.append("\r\nDealer Win!");
+                cleanMoney("dealer");
+                count = 0;
+
+            } else if (player[0] == dealer[0]) {
+                Jta_game_record.append("\r\nTied!");
+                cleanMoney("tie");
+                count = 0;
+            }
         }
+
     }
 
     public void cleanMoney(String iswho){
@@ -322,11 +373,56 @@ public class myPanel extends JFrame {
             Jp_dealer_cards.removeAll();
 
         }
+        else  if(iswho.equals("tie")){
+            String[] dealer_bet = Jl_dealer_bet.getText().split(" ");
+            String[] player_bet = Jl_player_bet.getText().split(" ");
+            String[] daccount = Jl_dealer_account.getText().split(" ");
+            String[] paccount = Jl_player_account.getText().split(" ");
+            double dreturn = Double.parseDouble(daccount[1])+ Double.parseDouble(dealer_bet[1]) ;
+            double preturn = Double.parseDouble(paccount[1])+ Double.parseDouble(player_bet[1]) ;
+
+            Jl_dealer_account.setText("Account: " + dreturn + " $");
+            Jl_dealer_bet.setText("Bet: " + 0 + " $");
+            Jl_player_account.setText("Account: " + preturn + " $");
+            Jl_player_bet.setText("Bet: " + 0 + " $");
+            Jl_dealer_bet.updateUI();
+            Jl_dealer_account.updateUI();
+            Jl_player_bet.updateUI();
+            Jl_player_account.updateUI();
+
+            Jp_player_cards.removeAll();
+            Jp_dealer_cards.removeAll();
+
+        }
+
+
         player[0]=0;
         player[1]=0;
         dealer[0]=0;
         dealer[1]=0;
         Jp_player_cards.removeAll();
         Jp_dealer_cards.removeAll();
+        Jp_player_cards.updateUI();
+        Jp_dealer_cards.updateUI();
+        checkbudget();
+    }
+
+    public void checkbudget(){
+
+        String[] dealeraccount = Jl_dealer_account.getText().split(" ");
+        String[] playeraccount = Jl_player_account.getText().split(" ");
+        double pa=Double.parseDouble(playeraccount[1]);
+        double da=Double.parseDouble(dealeraccount[1]);
+
+        if(pa==0){
+            Jta_game_record.append("\r\nGame is over, player has no money to lose!");
+            JOptionPane.showConfirmDialog(MyPanel,"Game is over, player has no money to lose!");
+            System.exit(0);
+        }else if(da==0){
+            Jta_game_record.append("\r\nGame is over, dealer has no money to lose!");
+            JOptionPane.showConfirmDialog(MyPanel,"Game is over, dealer has no money to lose!");
+            System.exit(0);
+        }
+
     }
 }
