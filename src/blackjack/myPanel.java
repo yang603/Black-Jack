@@ -46,9 +46,9 @@ public class myPanel extends JFrame {
     ArrayList<Integer> pcards = new ArrayList<Integer>();
 
 
-    public static void main(String[] args) {
-        myPanel mp = new myPanel();
-    }
+//    public static void main(String[] args) {
+//        myPanel mp = new myPanel();
+//    }
 
     public myPanel() {
         JOptionPane.showConfirmDialog(MyPanel,"Note: Press Deal to start game after Adding Money to the bet!" +
@@ -170,8 +170,12 @@ public class myPanel extends JFrame {
                 if(count!=0) {
                     ran = new Random();
                     int i =1+ ran.nextInt(51);
+                    while(card.cardsNum.get(i)==0){//6 deck shoe limits
+                        i=1+ ran.nextInt(51);
+                    }
                     JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(i)));
                     pcards.add(i);
+                    card.cardsNum.put(i,card.cardsNum.get(i)-1);
                     Jp_player_cards.add(picLabel);
                     Jp_player_cards.updateUI();
                     count++;
@@ -187,7 +191,11 @@ public class myPanel extends JFrame {
                     int min=0;
                     while (min<=18) {
                         int j = 1 + ran.nextInt(51);
+                        while(card.cardsNum.get(j)==0){//6 deck shoe limits
+                            j=1+ ran.nextInt(51);
+                        }
                         dcards.add(j);
+                        card.cardsNum.put(j,card.cardsNum.get(j)-1);
                         JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
                         Jp_dealer_cards.add(picLabel);
                         Jp_dealer_cards.updateUI();
@@ -227,15 +235,23 @@ public class myPanel extends JFrame {
         for(int i=0;i<2;i++) {
             ran = new Random();
             int j=1+ran.nextInt(51);
+            while(card.cardsNum.get(j)==0){//6 deck shoe limits
+                j=1+ ran.nextInt(51);
+            }
             JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
             pcards.add(j);
+            card.cardsNum.put(j,card.cardsNum.get(j)-1);
             Jp_player_cards.add(picLabel);
             Jp_player_cards.updateUI();
             cardPoints(j, "player");
 
             if(i==1){
                 j=1+ran.nextInt(51);
+                while(card.cardsNum.get(j)==0){//6 deck shoe limits
+                    j=1+ ran.nextInt(51);
+                }
                 dcards.add(j);
+                card.cardsNum.put(j,card.cardsNum.get(j)-1);
                 picLabel = new JLabel(new ImageIcon(card.cards.get(53)));
                 Jp_dealer_cards.add(picLabel);
                 cardPoints(j,"dealer");
@@ -256,8 +272,12 @@ public class myPanel extends JFrame {
                 Jl_dealer_account.updateUI();
 
                 j=1+ran.nextInt(51);
+                while(card.cardsNum.get(j)==0){//6 deck shoe limits
+                    j=1+ ran.nextInt(51);
+                }
                 picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
                 dcards.add(j);
+                card.cardsNum.put(j,card.cardsNum.get(j)-1);
                 Jp_dealer_cards.add(picLabel);
                 Jp_dealer_cards.updateUI();
                 cardPoints(j,"dealer");
