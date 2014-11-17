@@ -22,7 +22,6 @@ public class Poker {
             for(int i=1;i<=53;i++) {
                 image=Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/poker_image/"+i+".jpg"));
                 cards.put(i,image);
-                System.out.println(i+" is ok!");
             }
         } catch (Exception e) {
             e.printStackTrace();

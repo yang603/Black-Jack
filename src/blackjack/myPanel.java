@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 /**
@@ -40,6 +42,9 @@ public class myPanel extends JFrame {
     int[] player=new int[2];
     int count=0;
     int stand=0;
+    ArrayList<Integer> dcards = new ArrayList<Integer>();
+    ArrayList<Integer> pcards = new ArrayList<Integer>();
+
 
     public static void main(String[] args) {
         myPanel mp = new myPanel();
@@ -164,6 +169,7 @@ public class myPanel extends JFrame {
                     ran = new Random();
                     int i =1+ ran.nextInt(51);
                     JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(i)));
+                    pcards.add(i);
                     Jp_player_cards.add(picLabel);
                     Jp_player_cards.updateUI();
                     count++;
@@ -179,6 +185,7 @@ public class myPanel extends JFrame {
                     int min=0;
                     while (min<=17) {
                         int j = 1 + ran.nextInt(51);
+                        dcards.add(j);
                         JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
                         Jp_dealer_cards.add(picLabel);
                         Jp_dealer_cards.updateUI();
@@ -195,6 +202,8 @@ public class myPanel extends JFrame {
                 if(count!=0){
                     Jta_game_record.append("\r\nYou can not quit the current game!");
                 }else {
+                    Jp_player_cards.removeAll();
+                    Jp_dealer_cards.removeAll();
                     String[] account = Jl_player_bet.getText().split(" ");
                     double money = Double.parseDouble(account[1]);
                     if (money<=0){
@@ -216,14 +225,17 @@ public class myPanel extends JFrame {
             ran = new Random();
             int j=1+ran.nextInt(51);
             JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
+            pcards.add(j);
             Jp_player_cards.add(picLabel);
             Jp_player_cards.updateUI();
             cardPoints(j, "player");
 
             if(i==1){
-                ran = new Random();
+                j=1+ran.nextInt(51);
+                dcards.add(j);
                 picLabel = new JLabel(new ImageIcon(card.cards.get(53)));
                 Jp_dealer_cards.add(picLabel);
+                cardPoints(j,"dealer");
             }else {
                 String[] account = Jl_dealer_account.getText().split(" ");
                 double budget = Double.parseDouble(account[1]);
@@ -240,8 +252,9 @@ public class myPanel extends JFrame {
                 Jl_dealer_bet.updateUI();
                 Jl_dealer_account.updateUI();
 
-                j=ran.nextInt(52);
+                j=1+ran.nextInt(51);
                 picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
+                dcards.add(j);
                 Jp_dealer_cards.add(picLabel);
                 Jp_dealer_cards.updateUI();
                 cardPoints(j,"dealer");
@@ -339,6 +352,7 @@ public class myPanel extends JFrame {
             }
         }
 
+
     }
 
     public void cleanMoney(String iswho){
@@ -404,6 +418,18 @@ public class myPanel extends JFrame {
         Jp_dealer_cards.removeAll();
         Jp_player_cards.updateUI();
         Jp_dealer_cards.updateUI();
+        for(int item : pcards){
+            JLabel pic = new JLabel(new ImageIcon(card.cards.get(item)));
+            Jp_player_cards.add(pic);
+            Jp_player_cards.updateUI();
+        }
+        for(int item : dcards){
+            JLabel pic = new JLabel(new ImageIcon(card.cards.get(item)));
+            Jp_dealer_cards.add(pic);
+            Jp_dealer_cards.updateUI();
+        }
+        pcards.clear();
+        dcards.clear();
         checkbudget();
     }
 
