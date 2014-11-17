@@ -176,14 +176,16 @@ public class myPanel extends JFrame {
                 if(count==1) {
                     ran = new Random();
                     int count = ran.nextInt(5);
-                    for (int i = 0; i < count; i++) {
+                    int min=0;
+                    while (min<=17) {
                         int j = 1 + ran.nextInt(51);
                         JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
                         Jp_dealer_cards.add(picLabel);
                         Jp_dealer_cards.updateUI();
                         cardPoints(j, "dealer");
-                        isWin();
+                        min = Math.min(dealer[0],dealer[1]);
                     }
+                    isWin();
                 }else{
                     Jta_game_record.append("\r\nPlease press Deal to start game!");
                 }
@@ -301,6 +303,9 @@ public class myPanel extends JFrame {
             Jl_player_account.updateUI();
             Jl_dealer_bet.updateUI();
 
+            Jp_player_cards.removeAll();
+            Jp_dealer_cards.removeAll();
+
         }else  if(iswho.equals("dealer")){
             String[] dealer_bet = Jl_dealer_bet.getText().split(" ");
             String[] player_bet = Jl_player_bet.getText().split(" ");
@@ -312,6 +317,10 @@ public class myPanel extends JFrame {
             Jl_player_bet.updateUI();
             Jl_player_account.updateUI();
             Jl_dealer_bet.updateUI();
+
+            Jp_player_cards.removeAll();
+            Jp_dealer_cards.removeAll();
+
         }
         player[0]=0;
         player[1]=0;
