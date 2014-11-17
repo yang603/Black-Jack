@@ -2,7 +2,92 @@
 # Use this file to answer Review Exercises from the Big Java textbook
 #########################################################################
 
+R13.1 Terms
+a.Recursion:Solve the problem by using the solution to the same problem with simpler inputs.
+b.Iteration:Act of repeating a process with the aim of approaching a desired goal.
+c.Infinite recursion:A method calling itself over and over again with no end in sight.
+d.Recursive helper method: A method which make slight changes in origional problem and lead to much easier recursive
+solution.
 
+R13.2 Smallest value
+findMin(array[] numbers, startIndex, endIndex)
+min=Integer.MAX_VALUE;
+currentIndex = startIndex+1;
+if (startIndex == endIndex)
+    return numbers[startIndex];
+else
+    min = numbers[startIndex];
+    if (min > numbers[currentIndex])
+        min = numbers[currentIndex];
+        findMin(numbers, currentIndex, endIndex);
+            return min;
+
+R13.3 Sort array of numbers
+Assume array A is the one we want to sort, and the mergersort is initialized as mergersort(A,0,A.length-1);
+
+public static void mergersort(int[] A, int p, int r){
+        if(p<r){
+            int q = (p+r)/2;
+            mergersort(A,p,q);
+            mergersort(A,q+1,r);
+            merger(A,p,q,r);
+        }
+    }
+
+public static void merger(int[] A, int p, int q, int r){
+        int n1 = q-p+1;
+        int n2 = r-q;
+        int[] A1 = new int[n1+1];
+        int[] A2 = new int[n2+1];
+        for(int i=0;i<n1;i++){
+            A1[i]=A[p+i];
+        }
+        for(int i=0;i<n2;i++){
+            A2[i]=A[q+i+1];
+        }
+        A[n1]=Integer.MAX_VALUE;
+        A[n2]=Integer.MAX_VALUE;
+        int i=0;
+        int j=0;
+        for(int k=p;k<=r;k++){
+            if(A1[i]<=A2[j]){
+                A[k]=A1[i];
+                i++;
+            }else{
+                A[k]=A2[j];
+                j++;
+            }
+        }
+
+    }
+
+R13.6 Exponents recursively
+
+method1
+
+fastpower(x,n)
+if n=1;
+    return x;
+else
+    a=fastpower(x,n/2);
+if n%2=0
+    return a*a;
+else
+    return a*a*x
+
+method2
+power(x,n)
+if n=1
+    return x
+else
+    return x*power(x,n-1)
+
+R13.8 Factorial recursively
+factor(n)
+if n=0
+    return 1;
+else
+    return n*factor(n-1);
 
 
 
