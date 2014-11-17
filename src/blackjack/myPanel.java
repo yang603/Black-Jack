@@ -183,7 +183,7 @@ public class myPanel extends JFrame {
                 if(count!=0) {
                     ran = new Random();
                     int min=0;
-                    while (min<=17) {
+                    while (min<=18) {
                         int j = 1 + ran.nextInt(51);
                         dcards.add(j);
                         JLabel picLabel = new JLabel(new ImageIcon(card.cards.get(j)));
@@ -191,12 +191,13 @@ public class myPanel extends JFrame {
                         Jp_dealer_cards.updateUI();
                         cardPoints(j, "dealer");
                         min = Math.min(dealer[0],dealer[1]);
+                        System.out.println(min);
                     }
                     count++;
                     stand=1;
                     isWin();
                 }else{
-                    Jta_game_record.append("\r\nPlease press Deal to start game!");
+                    Jta_game_record.append("\r\nPlease add money and press Deal to start game!");
                 }
             }else if (e.getActionCommand().equals("Deal")){
                 if(count!=0){
@@ -295,8 +296,8 @@ public class myPanel extends JFrame {
     }
 
     public void isWin(){
-        Jta_game_record.append("\r\nPlayer soft hand"+player[0]+"\r\nPlayer hard hand"+player[1]);
-        Jta_game_record.append("\r\nDealer current known soft hand"+dealer[0]+"\r\nDealer current known hard hand"+dealer[1]);
+//        Jta_game_record.append("\r\nPlayer soft hand"+player[0]+"\r\nPlayer hard hand"+player[1]);
+//        Jta_game_record.append("\r\nDealer current known soft hand"+dealer[0]+"\r\nDealer current known hard hand"+dealer[1]);
         if(count==1){
             if (player[1]==21&&dealer[1]!=21) {
                 Jta_game_record.append("\r\nplayer Win!");
@@ -326,26 +327,38 @@ public class myPanel extends JFrame {
             }
 
         } else if(stand==1){
-            if (player[0] > 21 && player[1] > 21) {
+            if (player[0] > 21) {
                 Jta_game_record.append("\r\nPlayer bust!\r\nDealer Win!");
                 cleanMoney("dealer");
                 count = 0;
 
-            } else if (dealer[0] > 21 && dealer[1] > 21) {
+            } else if (dealer[0] > 21) {
                 Jta_game_record.append("\r\nDealer bust!\r\nPlayer Win!");
                 cleanMoney("player");
                 count = 0;
-            } else if (player[0] > dealer[0]) {
+            }
+
+            int pvalue = player[1];
+            if(player[1]>21){
+                pvalue = player[0];
+            }
+
+            int dvalue = dealer[1];
+            if(dealer[1]>21){
+                dvalue = dealer[0];
+            }
+
+            if (pvalue > dvalue) {
                 Jta_game_record.append("\r\nplayer Win!");
                 cleanMoney("player");
                 count = 0;
 
-            } else if (player[0] < dealer[0]) {
+            } else if (pvalue < dvalue) {
                 Jta_game_record.append("\r\nDealer Win!");
                 cleanMoney("dealer");
                 count = 0;
 
-            } else if (player[0] == dealer[0]) {
+            } else if (pvalue == dvalue) {
                 Jta_game_record.append("\r\nTied!");
                 cleanMoney("tie");
                 count = 0;
@@ -409,7 +422,8 @@ public class myPanel extends JFrame {
 
         }
 
-
+//        Jta_game_record.append("\r\nPlayer soft hand"+player[0]+"\r\nPlayer hard hand"+player[1]);
+//        Jta_game_record.append("\r\nDealer current known soft hand"+dealer[0]+"\r\nDealer current known hard hand"+dealer[1]);
         player[0]=0;
         player[1]=0;
         dealer[0]=0;
